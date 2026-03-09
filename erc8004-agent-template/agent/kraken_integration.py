@@ -1,6 +1,7 @@
 """
 Kraken API Integration for AI Trading Agents
-Supports REST, WebSocket, and Embed APIs
+Now supports both direct API access and Kraken CLI MCP server integration
+Recommended: Use MCP integration for better compatibility and features
 """
 
 import asyncio
@@ -15,6 +16,7 @@ import hashlib
 import base64
 import time
 from urllib.parse import urlencode
+from .mcp_client import MCPClient, MCPConfig, KrakenMCPBot
 
 @dataclass
 class KrakenConfig:
@@ -327,22 +329,98 @@ class KrakenTradingBot:
         await self.ws_client.close()
         self.logger.info("Kraken trading bot shutdown complete")
 
+class UnifiedKrakenIntegration:
+    """Unified Kraken integration supporting both MCP and direct API access"""
+    
+    def __init__(self, 
+                 api_key: Optional[str] = None, 
+                 api_secret: Optional[str] = None,
+                 use_mcp: bool = True,
+                 mcp_services: List[str] = None,
+                 sandbox: bool = True):
+        """
+        Initialize Kraken integration
+        
+        Args:
+            api_key: Kraken API key (required for direct API)
+            api_secret: Kraken API secret (required for direct API)
+            use_mcp: Whether to use MCP server (recommended)
+            mcp_services: List of MCP services to enable
+            sandbox: Use sandbox environment
+        """
+        self.use_mcp = use_mcp
+        self.logger = logging.getLogger(__name__)
+        
+        if use_mcp:
+            # MCP integration
+            mcp_config = MCPConfig(
+                services=mcp_services or ["market", "account", "paper"],
+                allow_dangerous=False
+            )
+            self.mcp_bot = KrakenMCPBot(mcp_config)
+            self.direct_client = None
+        else:
+            # Direct API integration
+            if not api_key or not api_secret:
+                raise ValueError("API key and secret required for direct API access")
+            
+            config = KrakenConfig(
+                api_key=api_key,
+                api_secret=api_secret,
+                sandbox=sandbox
+            )
+            self.direct_client = KrakenTradingBot(config)
+            self.mcp_bot = None
+    
+    async def initialize(self):
+        """Initialize the chosen integration method"""
+        if self.use_mcp:
+            await self.mcp_bot.initialize()
+        else:
+            await self.direct_client.initialize()
+    
+    async def get_market_data(self, pair: str) -> Dict:
+        """Get market data using chosen integration"""
+        if self.use_mcp:
+            return await self.mcp_bot.get_market_data(pair)
+        else:
+            return await self.direct_client.get_market_data(pair)
+    
+    async def execute_trade(self, signal: Dict, pair: str, max_position_size: float) -> Dict:
+        """Execute trade using chosen integration"""
+        if self.use_mcp:
+            return await self.mcp_bot.execute_trade(signal, pair, max_position_size)
+        else:
+            return await self.direct_client.execute_trade(signal, pair, max_position_size)
+    
+    async def get_account_status(self) -> Dict:
+        """Get account status using chosen integration"""
+        if self.use_mcp:
+            return await self.mcp_bot.get_account_status()
+        else:
+            # For direct API, we need to implement this
+            return {"error": "Not implemented for direct API"}
+    
+    async def shutdown(self):
+        """Shutdown the integration"""
+        if self.use_mcp:
+            await self.mcp_bot.shutdown()
+        else:
+            await self.direct_client.shutdown()
+
 # Example usage
 async def example_usage():
-    config = KrakenConfig(
-        api_key="your_api_key",
-        api_secret="your_api_secret",
-        sandbox=True
-    )
+    """Example of using unified Kraken integration"""
     
-    bot = KrakenTradingBot(config)
-    await bot.initialize()
+    # Method 1: MCP Integration (Recommended)
+    mcp_integration = UnifiedKrakenIntegration(use_mcp=True)
+    await mcp_integration.initialize()
     
     # Get market data
-    market_data = await bot.get_market_data("XBTUSD")
-    print(f"Market data: {market_data}")
+    market_data = await mcp_integration.get_market_data("BTCUSD")
+    print(f"MCP Market data: {market_data['ticker']}")
     
-    # Example trade execution
+    # Execute trade
     signal = {
         'action': 'buy',
         'confidence': 0.8,
@@ -350,10 +428,19 @@ async def example_usage():
         'reasoning': 'Mean reversion signal'
     }
     
-    result = await bot.execute_trade(signal, "XBTUSD", 0.1)
-    print(f"Trade result: {result}")
+    result = await mcp_integration.execute_trade(signal, "BTCUSD", 0.1)
+    print(f"MCP Trade result: {result}")
     
-    await bot.shutdown()
+    await mcp_integration.shutdown()
+    
+    # Method 2: Direct API (Legacy)
+    # direct_integration = UnifiedKrakenIntegration(
+    #     api_key="your_api_key",
+    #     api_secret="your_api_secret",
+    #     use_mcp=False
+    # )
+    # await direct_integration.initialize()
+    # ... use same interface
 
 if __name__ == "__main__":
     asyncio.run(example_usage())

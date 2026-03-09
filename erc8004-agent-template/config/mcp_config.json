@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "kraken": {
+      "command": "kraken",
+      "args": [
+        "mcp",
+        "-s",
+        "market,account,paper"
+      ]
+    }
+  }
+}

@@ -1,0 +1,82 @@
+[package]
+name = "erc8004-kraken-agent"
+version = "0.1.0"
+edition = "2021"
+authors = ["ERC-8004 Hackathon Team"]
+description = "AI Trading Agent with ERC-8004 Trust Layer and Kraken CLI MCP Integration"
+license = "MIT"
+repository = "https://github.com/your-org/erc8004-agent-template"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+tokio-util = "0.7"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+jsonrpsee = { version = "0.20", features = ["client"] }
+
+# HTTP and WebSocket
+reqwest = { version = "0.11", features = ["json", "stream"] }
+tokio-tungstenite = "0.20"
+futures-util = "0.3"
+
+# Ethereum and Web3
+ethers = { version = "2.0", features = ["ws", "rustls"] }
+ethers-contract = "2.0"
+ethers-core = "2.0"
+
+# Cryptography
+secp256k1 = { version = "0.28", features = ["rand-std"] }
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.21"
+hex = "0.4"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Configuration
+config = "0.14"
+dotenv = "0.15"
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+url = "2.4"
+
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+
+# Database (optional)
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"], optional = true }
+
+# Metrics (optional)
+prometheus = { version = "0.13", optional = true }
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockall = "0.11"
+
+[features]
+default = ["database", "metrics"]
+database = ["sqlx"]
+metrics = ["prometheus"]
+
+[[bin]]
+name = "kraken-agent"
+path = "src/main.rs"
+
+[[bin]]
+name = "mcp-examples"
+path = "examples/mcp_examples.rs"
+
+[lib]
+name = "erc8004_kraken"
+path = "src/lib.rs"

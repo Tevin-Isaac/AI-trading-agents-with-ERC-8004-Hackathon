@@ -1,0 +1,33 @@
+{
+  "description": "Kraken CLI MCP Server Configuration for ERC-8004 AI Trading Agents",
+  "services": {
+    "market": "Public market data (ticker, orderbook, trades, OHLCV)",
+    "account": "Private account data (balance, orders, positions)",
+    "paper": "Paper trading simulation (safe testing)",
+    "trade": "Live trading (dangerous - requires explicit permission)",
+    "funding": "Deposits, withdrawals, transfers (dangerous)"
+  },
+  "safety_levels": {
+    "safe": ["market", "account", "paper"],
+    "moderate": ["market", "account", "paper", "trade"],
+    "full": ["market", "account", "paper", "trade", "funding"]
+  },
+  "erc8004_integration": {
+    "validation_required": true,
+    "reputation_threshold": 70,
+    "position_size_limits": {
+      "paper": 1.0,
+      "live": 0.1
+    }
+  },
+  "client_info": {
+    "name": "ERC-8004 AI Trading Agent",
+    "version": "1.0.0",
+    "description": "AI trading agent with ERC-8004 trust layer and Kraken integration"
+  },
+  "security": {
+    "allow_dangerous": false,
+    "require_confirmation": true,
+    "audit_logging": true
+  }
+}
