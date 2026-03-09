@@ -4,10 +4,9 @@
 
 **Now with Kraken CLI Partnership!** This template provides a solid foundation for building AI trading agents with ERC-8004 trust layer and **official Kraken CLI MCP integration**.
 
-### � **Multi-Language Support**
+### 🌍 **Multi-Language Support**
 - **🦀 Rust** - High-performance, memory-safe implementation
-- **📗 TypeScript** - Modern Node.js/TypeScript for web integration  
-- **🐍 Python** - Original implementation with extensive examples
+- **📗 TypeScript** - Modern Node.js/TypeScript for web integration
 
 ### � **Why This Template?**
 
@@ -17,7 +16,7 @@
 - ✅ **Paper Trading**: Safe testing environment with Kraken's simulation
 - ✅ **50+ Agent Skills**: Leverage Kraken's pre-built trading strategies
 - ✅ **Production Ready**: Battle-tested infrastructure from Kraken + your ERC-8004 trust layer
-- ✅ **Multi-Language**: Choose your preferred language (Rust, TypeScript, or Python)
+- ✅ **Multi-Language**: Choose your preferred language (Rust or TypeScript)
 
 ## Project Structure
 
@@ -42,12 +41,6 @@ erc8004-agent-template/
 │   │   └── types/              # Type definitions
 │   ├── package.json
 │   └── tsconfig.json
-├── 🐍 agent/                   # Python implementation
-│   ├── strategy.py
-│   ├── kraken_integration.py  # 🆕 Unified MCP + Direct API
-│   ├── mcp_client.py          # 🆕 Kraken CLI MCP client
-│   ├── validation.py
-│   └── main.py
 ├── contracts/                 # Solidity smart contracts
 │   ├── IdentityRegistry.sol
 │   ├── ReputationRegistry.sol
@@ -58,8 +51,7 @@ erc8004-agent-template/
 │   └── kraken_services_config.json
 ├── examples/                  # 🆕 Usage examples
 │   ├── mcp_examples.rs        # Rust examples
-│   ├── mcp_examples.ts        # TypeScript examples
-│   └── kraken_mcp_examples.py # Python examples (7 comprehensive)
+│   └── mcp_examples.ts        # TypeScript examples
 ├── frontend/                  # Dashboard UI (React)
 ├── scripts/                   # Deployment and utility scripts
 └── tests/                     # Test suites
@@ -88,10 +80,6 @@ erc8004-agent-template/
    # TypeScript/Node.js (recommended for web integration)
    node --version
    npm --version
-   
-   # Python (original implementation)
-   python --version
-   pip --version
    ```
 
 ### Project Setup
@@ -130,22 +118,6 @@ npm run examples
 
 # Start agent
 npm run agent
-```
-
-#### 🐍 **Python Implementation**
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Setup environment
-cp .env.example .env
-# Edit .env with your configuration
-
-# Run examples
-python examples/kraken_mcp_examples.py
-
-# Start agent
-python agent/main.py --network sepolia --kraken-mcp
 ```
 
 ### Environment Configuration
@@ -208,21 +180,6 @@ npm run agent -- --test-kraken
 
 # Run examples
 npm run examples
-```
-
-### 🐍 **Python Implementation**
-```bash
-# Start with Kraken CLI MCP integration
-python agent/main.py --network sepolia --kraken-mcp
-
-# Run with specific strategy
-python agent/main.py --strategy mean_reversion --risk-level medium --kraken-mcp
-
-# Paper trading only (safe for hackathon)
-python agent/main.py --paper-trading --kraken-mcp
-
-# Run comprehensive examples
-python examples/kraken_mcp_examples.py
 ```
 
 ## 🌟 Key Features
@@ -313,31 +270,7 @@ const result = await agent.krakenIntegration.executeTrade(signal, 0.1);
 console.log('Trade Status:', result.status);
 ```
 
-### **🐍 Python Examples**
-```python
-from agent.kraken_integration import UnifiedKrakenIntegration
-
-# Initialize with MCP
-integration = UnifiedKrakenIntegration(use_mcp=True)
-await integration.initialize()
-
-# Get market data
-market_data = await integration.get_market_data("BTCUSD")
-print(f"BTC Price: ${market_data['ticker']['result']['BTCUSD']['c'][0]}")
-
-# Execute trade (paper trading)
-signal = {
-    'action': 'buy',
-    'confidence': 0.8,
-    'position_size': 0.1,
-    'reasoning': 'RSI oversold condition'
-}
-
-result = await integration.execute_trade(signal, "BTCUSD", 0.1)
-print(f"Trade Status: {result['status']}")
-```
-
-See `examples/kraken_mcp_examples.py` for 7 comprehensive examples including:
+See `examples/` directory for comprehensive examples including:
 - Multi-asset monitoring
 - Risk management
 - Portfolio tracking
@@ -347,7 +280,7 @@ See `examples/kraken_mcp_examples.py` for 7 comprehensive examples including:
 ## 🚀 Next Steps for Hackathon
 
 ### **Phase 1: Setup & Testing (Day 1)**
-1. ✅ Choose your language (Rust, TypeScript, or Python)
+1. ✅ Choose your language (Rust or TypeScript)
 2. ✅ Install Kraken CLI and verify installation
 3. ✅ Setup environment variables and configuration
 4. ✅ Run example scripts to test integration
@@ -370,7 +303,6 @@ See `examples/kraken_mcp_examples.py` for 7 comprehensive examples including:
 |----------|-------------|--------------|------------------|-----------|
 | Rust | ⚡ Fastest | 🔒 Lowest | 🐌 Moderate | 🛠️ Growing |
 | TypeScript | 🚀 Fast | 📊 Moderate | ⚡ Fast | 🌐 Largest |
-| Python | 🐢 Slower | 📈 Highest | ⚡ Fastest | 🔬 Rich |
 
 ### **Production Deployment**
 ```bash
@@ -379,9 +311,6 @@ cargo run --bin kraken-agent -- start --production
 
 # TypeScript
 npm run agent -- --start --production
-
-# Python
-python agent/main.py --network mainnet --kraken-mcp
 ```
 
 ## 🤝 Partnership Showcase
